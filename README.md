@@ -15,17 +15,17 @@ docker-compose.yml: https://github.com/mastodon/mastodon/blob/main/docker-compos
 #### App
 
 ```
-$ fly apps create --region iad --name mastodon
+$ fly apps create --name mastodon
 $ fly scale memory 512 # rails needs more than 256mb
 ```
 
 #### Secrets
 
 ```
-$ SECRET_KEY_BASE=$(docker run --rm -it tootsuite/mastodon:latest bin/rake secret)
-$ OTP_SECRET=$(docker run --rm -it tootsuite/mastodon:latest bin/rake secret)
+$ SECRET_KEY_BASE=$(docker run --rm -it pumpitbetter/social:latest bin/rake secret)
+$ OTP_SECRET=$(docker run --rm -it pumpitbetter/social:latest bin/rake secret)
 $ fly secrets set OTP_SECRET=$OTP_SECRET SECRET_KEY_BASE=$SECRET_KEY_BASE
-$ docker run --rm -e OTP_SECRET=$OTP_SECRET -e SECRET_KEY_BASE=$SECRET_KEY_BASE -it tootsuite/mastodon:latest bin/rake mastodon:webpush:generate_vapid_key | fly secrets import
+$ docker run --rm -e OTP_SECRET=$OTP_SECRET -e SECRET_KEY_BASE=$SECRET_KEY_BASE -it pumpitbetter/social:latest bin/rake mastodon:webpush:generate_vapid_key | fly secrets import
 ```
 
 #### Redis server
@@ -33,8 +33,8 @@ $ docker run --rm -e OTP_SECRET=$OTP_SECRET -e SECRET_KEY_BASE=$SECRET_KEY_BASE 
 Redis is used to store the home/list feeds, along with the sidekiq queue information. The feeds can be regenerated using `tootctl`, so persistence is [not strictly necessary](https://docs.joinmastodon.org/admin/backups/#failure).
 
 ```
-$ fly apps create --region iad --name mastodon-redis
-$ fly volumes create -c fly.redis.toml --region iad mastodon_redis
+$ fly apps create mastodon-redis
+$ fly volumes create -c fly.redis.toml --region ord mastodon_redis
 $ fly deploy --config fly.redis.toml --build-target redis-server
 ```
 
@@ -47,7 +47,7 @@ Create that volume below, or remove the `[mounts]` section and uncomment `[env] 
 ##### Option 1: Local volume
 
 ```
-$ fly volumes create --region iad mastodon_uploads
+$ fly volumes create --region ord mastodon_uploads
 ```
 
 ##### Option 2: S3, etc
@@ -61,8 +61,7 @@ See [lib/tasks/mastodon.rake](https://github.com/mastodon/mastodon/blob/5ba46952
 #### Postgres database
 
 ```
-$ fly pg create --region iad --name mastodon-pg
-$ fly pg attach --postgres-app mastodon-pg
+$ fly postgres attach --app mastodon --postgres-app pumpitbetter-postgres-cluster
 $ fly deploy -c fly.setup.toml # run `rails db:setup`
 ```
 
