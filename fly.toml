@@ -4,7 +4,8 @@ kill_signal = "SIGINT"
 kill_timeout = 5
 
 [env]
-  LOCAL_DOMAIN = "social.pumpitbetter.com"
+  LOCAL_DOMAIN = "pumpitbetter.com"
+  WEB_DOMAIN = "social.pumpitbetter.com"
   RAILS_ENV = "production"
   RAILS_LOG_TO_STDOUT = "enabled"
   WEB_CONCURRENCY = "1"
@@ -13,6 +14,13 @@ kill_timeout = 5
   S3_ENABLED = true
   S3_BUCKET = "pumpitbetter-mastodon"
   # S3_ALIAS_HOST=files.example.com
+  SMTP_SERVER = "smtp.mailgun.org"
+  SMTP_PORT = "587"
+  SMTP_FROM_ADDRESS="support@pumpitbetter.com"
+
+  # THESE ARE SECRETS:
+  # SMTP_LOGIN=<Your Login here>
+  # SMTP_PASSWORD=<Your password here>
 
 # [mounts]
 #   processes = ["rails"]

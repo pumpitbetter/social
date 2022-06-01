@@ -70,3 +70,18 @@ $ fly deploy -c fly.setup.toml # run `rails db:setup`
 ```
 $ fly deploy
 ```
+
+#### Post install setup
+
+https://docs.joinmastodon.org/admin/setup/
+
+ssh to mastodon app: `flyctl ssh console`
+
+Create a new admin account with confirmed email:
+`RAILS_ENV=production tootctl accounts create tom --email tom@pumpitbetter.com --confirmed --role admin`
+
+SMTP secrets
+```
+$ fly secrets set SMTP_LOGIN=[see 'Mailgun for PumpItBetter' in Keepass]
+$ fly secrets set SMTP_PASSWORD=[see 'Mailgun for PumpItBetter' in Keepass]
+```
