@@ -85,3 +85,23 @@ SMTP secrets
 $ fly secrets set SMTP_LOGIN=[see 'Mailgun for PumpItBetter' in Keepass]
 $ fly secrets set SMTP_PASSWORD=[see 'Mailgun for PumpItBetter' in Keepass]
 ```
+
+### Admin
+
+Every so often you need to manually delete older media to keep S3 size down.  To do so:
+
+Console into your mastodon instance:
+```
+flyctl ssh console
+```
+
+Set PATH to ruby and mastodon executables:
+```
+export PATH=/opt/ruby/bin:/mastodon/bin:$PATH
+```
+
+Remove media:
+```
+RAILS_ENV=production tootctl media remove --days=7
+```
+
